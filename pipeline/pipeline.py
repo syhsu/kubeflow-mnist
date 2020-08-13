@@ -39,7 +39,7 @@ def preprocess_op(image: str, pvolume: PipelineVolume, data_dir: str):
     return dsl.ContainerOp(
         name='preprocessing',
         image=image,
-        command=[CONDA_PYTHON_CMD, f"{PROJECT_ROOT}/preprocessing.py"],
+        command=[CONDA_PYTHON_CMD, f"{PROJECT_ROOT}/src/preprocessing.py"],
         arguments=["--data_dir", data_dir],
         container_kwargs={'image_pull_policy': 'IfNotPresent'},
         pvolumes={"/workspace": pvolume}
@@ -50,7 +50,7 @@ def train_and_eval_op(image: str, pvolume: PipelineVolume, data_dir: str, ):
     return dsl.ContainerOp(
         name='training and evaluation',
         image=image,
-        command=[CONDA_PYTHON_CMD, f"{PROJECT_ROOT}/train.py"],
+        command=[CONDA_PYTHON_CMD, f"{PROJECT_ROOT}/src/train.py"],
         arguments=["--data_dir", data_dir],
         file_outputs={'output': f'{PROJECT_ROOT}/output.txt'},
         container_kwargs={'image_pull_policy': 'IfNotPresent'},
@@ -63,7 +63,7 @@ def train_and_eval_op(image: str, pvolume: PipelineVolume, data_dir: str, ):
     description='Fashion MNIST Training Pipeline to be executed on KubeFlow.'
 )
 def training_pipeline(image: str = 'benjamintanweihao/kubeflow-mnist',
-                      repo_url: str = 'https://github.com/benjamintanweihao/kubeflow-mnist.git',
+                      repo_url: str = 'https://github.com/syhsu/kubeflow-mnist.git',
                       data_dir: str = '/workspace'):
     git_clone = git_clone_darkrai_op(repo_url=repo_url)
 
