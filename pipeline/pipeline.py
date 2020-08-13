@@ -1,9 +1,12 @@
+import os.path, sys
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
+
 import kfp.dsl as dsl
 from kfp.dsl import PipelineVolume
 
 # To compile the pipeline:
 #   dsl-compile --py pipeline.py --output pipeline.tar.gz
-from constants import PROJECT_ROOT, CONDA_PYTHON_CMD
+from src.constants import PROJECT_ROOT, CONDA_PYTHON_CMD
 
 
 def git_clone_darkrai_op(repo_url: str):
