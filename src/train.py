@@ -86,6 +86,8 @@ def train(data_dir: str, epochs: str):
     )
     df['predicted'] = predictions.tolist()
 
+    print(df.info())
+
     vocab = list(df['target'].unique())
     cm = confusion_matrix(df['target'], df['predicted'], labels=vocab)
     data = []
