@@ -98,7 +98,7 @@ def train(data_dir: str, epochs: str):
         df_cm.to_csv(f, columns=['target', 'predicted', 'count'], header=False, index=False)
     
     rawCsv = ''
-    for line in open(vm_file):
+    for line in open(cm_file):
         rawCsv = rawCsv + line
 
     metadata = {
