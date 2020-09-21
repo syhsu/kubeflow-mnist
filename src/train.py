@@ -11,7 +11,9 @@ import argparse
 from constants import PROJECT_ROOT
 
 from tensorflow.python.lib.io import file_io
-from sklearn.metrics import confusion_matrix, accuracy_score
+from sklearn.metrics import confusion_matrix
+import pandas as pd
+import numpy as np
 
 
 def train(data_dir: str, epochs: str):
@@ -70,6 +72,48 @@ def train(data_dir: str, epochs: str):
     }
     with file_io.FileIO('/mlpipeline-metrics.json', 'w') as f:
         json.dump(metrics, f)
+    
+    # Add confusion matrix
+    class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
+               'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
+    probability_model = tf.keras.Sequential([model, 
+                                         tf.keras.layers.Softmax()])
+    predictions = np.argmax(probability_model.predict(test_images), axis=1)
+    
+              
+    df = pd.DataFrame(
+        test_labels.tolist(), columns=['target'])
+    )
+    df['predicted'] = predictions.tolist()
+
+    vocab = list(df['target'].unique())
+    cm = confusion_matrix(df['target'], df['predicted'], labels=vocab)
+    data = []
+    for target_index, target_row in enumerate(cm):
+        for predicted_index, count in enumerate(target_row):
+            data.append((vocab[target_index], vocab[predicted_index], count))
+    
+    df_cm = pd.DataFrame(data, columns=['target', 'predicted', 'count'])
+    cm_file = os.path.join('/confusion_matrix.csv')
+    with file_io.FileIO(cm_file, 'w') as f:
+        df_cm.to_csv(f, columns=['target', 'predicted', 'count'], header=False, index=False)
+
+    metadata = {
+        'outputs' : [{
+        'type': 'confusion_matrix',
+        'format': 'csv',
+        'schema': [
+            {'name': 'target', 'type': 'CATEGORY'},
+            {'name': 'predicted', 'type': 'CATEGORY'},
+            {'name': 'count', 'type': 'NUMBER'},
+        ],
+        'source': cm_file,
+        # Convert vocab to string because for bealean values we want "True|False" to match csv data.
+        'labels': list(map(str, vocab)),
+        }]
+    }
+    with file_io.FileIO('/mlpipeline-ui-metadata.json', 'w') as f:
+        json.dump(metadata, f)
 
 
 if __name__ == '__main__':
