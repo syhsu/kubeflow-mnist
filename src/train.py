@@ -44,6 +44,8 @@ def train(data_dir: str, epochs: str):
     # Evaluation
     test_loss, test_acc = model.evaluate(test_images, test_labels, verbose=2)
 
+    
+
     print(f'Test Loss: {test_loss}')
     print(f'Test Acc: {test_acc}')
 
@@ -56,6 +58,9 @@ def train(data_dir: str, epochs: str):
         f.write(model_path)
         print(f'Model written to: {model_path}')
 
+    probability_model = tf.keras.Sequential([model, tf.keras.layers.Softmax()])
+    predictions = np.argmax(probability_model.predict(test_images), axis=1)
+    topk = tf.keras.metrics.top_k_categorical_accuracy(test_labels, probability_model.predict(test_images), k=5)
 
     # Add pipeline metrics
     metrics = {
@@ -68,6 +73,11 @@ def train(data_dir: str, epochs: str):
             'name': 'loss',
             'numberValue':  float(test_loss),
             'format': "RAW",
+        },
+        {
+            'name': 'top5',
+            'numberValue':  float(topk),
+            'format': "PERCENTAGE",
         }]
     }
     with file_io.FileIO('/mlpipeline-metrics.json', 'w') as f:
@@ -76,15 +86,13 @@ def train(data_dir: str, epochs: str):
     # Add confusion matrix
     class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
                'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
-    probability_model = tf.keras.Sequential([model, tf.keras.layers.Softmax()])
-    predictions = np.argmax(probability_model.predict(test_images), axis=1)
     
     df = pd.DataFrame(
         test_labels.tolist(), columns=['target']
     )
     df['predicted'] = predictions.tolist()
 
-    vocab = sorted(list(df['target'].unique()))
+    vocab = sorted(list(df['target'].unique()), reverse=True)
     cm = confusion_matrix(df['target'], df['predicted'], labels=vocab)
     data = []
     for target_index, target_row in enumerate(cm):
