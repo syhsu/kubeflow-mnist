@@ -78,5 +78,5 @@ def training_pipeline(image: str = 'benjamintanweihao/kubeflow-mnist',
 
 if __name__ == '__main__':
     import kfp.compiler as compiler
-    version = '2.0'
-    compiler.Compiler().compile(training_pipeline, __file__ + '_v' + version + '.tar.gz')
+    version = '2.1'
+    compiler.Compiler().compile(training_pipeline, 'Gitpipeline_v' + version + '.tar.gz')

@@ -54,6 +54,7 @@ def train(data_dir: str, epochs: str):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Kubeflow FMNIST training script')
     parser.add_argument('--data_dir', help='path to images and labels.')
+    parser.add_argument('--epochs', help='epochs')
     args = parser.parse_args()
 
     train(data_dir=args.data_dir)
