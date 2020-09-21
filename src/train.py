@@ -10,7 +10,7 @@ import argparse
 from constants import PROJECT_ROOT
 
 
-def train(data_dir: str):
+def train(data_dir: str, epochs: str):
     # Training
     model = keras.Sequential([
         keras.layers.Flatten(input_shape=(28, 28)),
@@ -27,7 +27,7 @@ def train(data_dir: str):
     with open(os.path.join(data_dir, 'train_labels.pickle'), 'rb') as f:
         train_labels = pickle.load(f)
 
-    model.fit(train_images, train_labels, epochs=10)
+    model.fit(train_images, train_labels, epochs=int(epochs))
 
     with open(os.path.join(data_dir, 'test_images.pickle'), 'rb') as f:
         test_images = pickle.load(f)

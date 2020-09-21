@@ -46,12 +46,12 @@ def preprocess_op(image: str, pvolume: PipelineVolume, data_dir: str):
     )
 
 
-def train_and_eval_op(image: str, pvolume: PipelineVolume, data_dir: str, ):
+def train_and_eval_op(image: str, pvolume: PipelineVolume, data_dir: str, epochs: str):
     return dsl.ContainerOp(
         name='training and evaluation',
         image=image,
         command=[CONDA_PYTHON_CMD, f"{PROJECT_ROOT}/src/train.py"],
-        arguments=["--data_dir", data_dir],
+        arguments=["--data_dir", data_dir, "--epochs", epochs],
         file_outputs={'output': f'{PROJECT_ROOT}/output.txt'},
         container_kwargs={'image_pull_policy': 'IfNotPresent'},
         pvolumes={"/workspace": pvolume}
@@ -64,7 +64,7 @@ def train_and_eval_op(image: str, pvolume: PipelineVolume, data_dir: str, ):
 )
 def training_pipeline(image: str = 'benjamintanweihao/kubeflow-mnist',
                       repo_url: str = 'https://github.com/syhsu/kubeflow-mnist.git',
-                      data_dir: str = '/workspace'):
+                      data_dir: str = '/workspace', epochs: str = '5'):
     git_clone = git_clone_darkrai_op(repo_url=repo_url)
 
     preprocess_data = preprocess_op(image=image,
@@ -73,10 +73,10 @@ def training_pipeline(image: str = 'benjamintanweihao/kubeflow-mnist',
 
     _training_and_eval = train_and_eval_op(image=image,
                                            pvolume=preprocess_data.pvolume,
-                                           data_dir=data_dir)
+                                           data_dir=data_dir, epochs=epochs)
 
 
 if __name__ == '__main__':
     import kfp.compiler as compiler
-
-    compiler.Compiler().compile(training_pipeline, __file__ + '.tar.gz')
+    version = '2.0'
+    compiler.Compiler().compile(training_pipeline, __file__ + '_v' + version + '.tar.gz')
