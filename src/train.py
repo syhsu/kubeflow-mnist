@@ -100,6 +100,7 @@ def train(data_dir: str, epochs: str):
     rawCsv = ''
     for line in open(cm_file):
         rawCsv = rawCsv + line
+    print(rawCsv)
 
     metadata = {
         'outputs' : [{
