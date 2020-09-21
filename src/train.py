@@ -96,9 +96,10 @@ def train(data_dir: str, epochs: str):
     with file_io.FileIO(cm_file, 'w') as f:
         df_cm.to_csv(f, columns=['target', 'predicted', 'count'], header=False, index=False)
     
-    buf = ''
-    for line in open(cm_file):
-        buf = buf + line
+    buf = [line for line in open(cm_file)]
+    rawCsv = ''
+    for i in buf[::-1]:
+        rawCsv = rawCsv + i
 
     metadata = {
         'outputs' : [{
@@ -110,7 +111,7 @@ def train(data_dir: str, epochs: str):
             {'name': 'predicted', 'type': 'CATEGORY'},
             {'name': 'count', 'type': 'NUMBER'},
         ],
-        'source': buf,
+        'source': rawCsv,
         # Convert vocab to string because for bealean values we want "True|False" to match csv data.
         'labels': list(map(str, vocab)),
         }]
