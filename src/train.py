@@ -76,17 +76,13 @@ def train(data_dir: str, epochs: str):
     # Add confusion matrix
     class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
                'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
-    probability_model = tf.keras.Sequential([model, 
-                                         tf.keras.layers.Softmax()])
+    probability_model = tf.keras.Sequential([model, tf.keras.layers.Softmax()])
     predictions = np.argmax(probability_model.predict(test_images), axis=1)
     
-              
     df = pd.DataFrame(
         test_labels.tolist(), columns=['target']
     )
     df['predicted'] = predictions.tolist()
-
-    print(df.info())
 
     vocab = list(df['target'].unique())
     cm = confusion_matrix(df['target'], df['predicted'], labels=vocab)
@@ -96,7 +92,7 @@ def train(data_dir: str, epochs: str):
             data.append((vocab[target_index], vocab[predicted_index], count))
     
     df_cm = pd.DataFrame(data, columns=['target', 'predicted', 'count'])
-    cm_file = os.path.join('/confusion_matrix.csv')
+    cm_file = '/confusion_matrix.csv'
     with file_io.FileIO(cm_file, 'w') as f:
         df_cm.to_csv(f, columns=['target', 'predicted', 'count'], header=False, index=False)
 

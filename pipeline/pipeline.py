@@ -54,6 +54,9 @@ def train_and_eval_op(image: str, pvolume: PipelineVolume, data_dir: str, epochs
         arguments=["--data_dir", data_dir, "--epochs", epochs],
         file_outputs={
             'output': f'{PROJECT_ROOT}/output.txt',
+            'cm':'/confusion_matrix.csv',
+        },
+        output_artifact_paths={
             'pipeline-metrics':'/mlpipeline-metrics.json',
             'mlpipeline-ui-metadata': '/mlpipeline-ui-metadata.json'
         },
@@ -66,7 +69,7 @@ def train_and_eval_op(image: str, pvolume: PipelineVolume, data_dir: str, epochs
     name='Fashion MNIST Training Pipeline',
     description='Fashion MNIST Training Pipeline to be executed on KubeFlow.'
 )
-def training_pipeline(image: str = 'benjamintanweihao/kubeflow-mnist',
+def training_pipeline(image: str = 'shyhs/kubeflow-mnist',
                       repo_url: str = 'https://github.com/syhsu/kubeflow-mnist.git',
                       data_dir: str = '/workspace', epochs: str = '5'):
     git_clone = git_clone_darkrai_op(repo_url=repo_url)
@@ -82,5 +85,5 @@ def training_pipeline(image: str = 'benjamintanweihao/kubeflow-mnist',
 
 if __name__ == '__main__':
     import kfp.compiler as compiler
-    version = '2.2'
+    version = '2.3'
     compiler.Compiler().compile(training_pipeline, 'Gitpipeline_v' + version + '.tar.gz')
