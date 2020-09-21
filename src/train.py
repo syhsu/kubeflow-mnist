@@ -57,4 +57,4 @@ if __name__ == '__main__':
     parser.add_argument('--epochs', help='epochs')
     args = parser.parse_args()
 
-    train(data_dir=args.data_dir)
+    train(data_dir=args.data_dir, epochs=args.epochs)
