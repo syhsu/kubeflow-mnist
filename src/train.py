@@ -63,6 +63,11 @@ def train(data_dir: str, epochs: str):
             'name': 'accuracy',
             'numberValue':  float(test_acc),
             'format': "PERCENTAGE",
+        },
+        {
+            'name': 'loss',
+            'numberValue':  float(test_loss),
+            'format': "RAW",
         }]
     }
     with file_io.FileIO('/mlpipeline-metrics.json', 'w') as f:
@@ -99,7 +104,7 @@ def train(data_dir: str, epochs: str):
         'outputs' : [{
         'type': 'confusion_matrix',
         'format': 'csv',
-        'storage': 'inline'
+        'storage': 'inline',
         'schema': [
             {'name': 'target', 'type': 'CATEGORY'},
             {'name': 'predicted', 'type': 'CATEGORY'},
