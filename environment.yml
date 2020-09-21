@@ -8,3 +8,4 @@ dependencies:
     - pip:
         - kfp==0.5.0
         - tensorflow-gpu==1.14
+        - sklearn

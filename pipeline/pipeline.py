@@ -52,7 +52,8 @@ def train_and_eval_op(image: str, pvolume: PipelineVolume, data_dir: str, epochs
         image=image,
         command=[CONDA_PYTHON_CMD, f"{PROJECT_ROOT}/src/train.py"],
         arguments=["--data_dir", data_dir, "--epochs", epochs],
-        file_outputs={'output': f'{PROJECT_ROOT}/output.txt'},
+        file_outputs={'output': f'{PROJECT_ROOT}/output.txt',
+        'mlpipeline-metrics': '/mlpipeline-metrics.json'},
         container_kwargs={'image_pull_policy': 'IfNotPresent'},
         pvolumes={"/workspace": pvolume}
     )
@@ -78,5 +79,5 @@ def training_pipeline(image: str = 'benjamintanweihao/kubeflow-mnist',
 
 if __name__ == '__main__':
     import kfp.compiler as compiler
-    version = '2.1'
+    version = '2.2'
     compiler.Compiler().compile(training_pipeline, 'Gitpipeline_v' + version + '.tar.gz')
