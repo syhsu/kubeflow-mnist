@@ -92,14 +92,14 @@ def train(data_dir: str, epochs: str):
             data.append((vocab[target_index], vocab[predicted_index], count))
     
     df_cm = pd.DataFrame(data, columns=['target', 'predicted', 'count'])
+    df_cm = df_cm.sort_values(by='target', ascending=True)
     cm_file = '/confusion_matrix.csv'
     with file_io.FileIO(cm_file, 'w') as f:
         df_cm.to_csv(f, columns=['target', 'predicted', 'count'], header=False, index=False)
     
-    buf = [line for line in open(cm_file)]
     rawCsv = ''
-    for i in buf[::-1]:
-        rawCsv = rawCsv + i
+    for line in open(vm_file):
+        rawCsv = rawCsv + line
 
     metadata = {
         'outputs' : [{
