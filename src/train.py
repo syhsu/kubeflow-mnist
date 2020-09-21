@@ -15,6 +15,19 @@ from sklearn.metrics import confusion_matrix
 import pandas as pd
 import numpy as np
 
+def topk_accuracy(y_true, y_prob, n=5, normalize=True):
+    num_obs, num_labels = y_prob.shape
+    idx = num_labels - n - 1
+    counter = 0
+    argsorted = np.argsort(y_prob, axis=1)
+    for i in range(num_obs):
+        if y_true[i] in argsorted[i, idx+1:]:
+            counter += 1
+    
+    if normalize:
+        return counter * 1.0 / num_obs
+    else:
+        return counter
 
 def train(data_dir: str, epochs: str):
     # Training
@@ -59,8 +72,10 @@ def train(data_dir: str, epochs: str):
         print(f'Model written to: {model_path}')
 
     probability_model = tf.keras.Sequential([model, tf.keras.layers.Softmax()])
-    predictions = np.argmax(probability_model.predict(test_images), axis=1)
-    topk = tf.keras.metrics.top_k_categorical_accuracy(test_labels, probability_model.predict(test_images), k=5)
+    y_predictions = probability_model.predict(test_images)
+    y_pred = np.argmax(y_predictions, axis=1)
+    topkAccuracy = topk_accuracy(test_labels, y_predictions)
+
 
     # Add pipeline metrics
     metrics = {
@@ -76,7 +91,7 @@ def train(data_dir: str, epochs: str):
         },
         {
             'name': 'top5',
-            'numberValue':  float(topk),
+            'numberValue':  float(topkAccuracy),
             'format': "PERCENTAGE",
         }]
     }
@@ -90,7 +105,7 @@ def train(data_dir: str, epochs: str):
     df = pd.DataFrame(
         test_labels.tolist(), columns=['target']
     )
-    df['predicted'] = predictions.tolist()
+    df['predicted'] = y_pred.tolist()
 
     vocab = sorted(list(df['target'].unique()), reverse=True)
     cm = confusion_matrix(df['target'], df['predicted'], labels=vocab)
