@@ -82,7 +82,7 @@ def train(data_dir: str, epochs: str):
     
               
     df = pd.DataFrame(
-        test_labels.tolist(), columns=['target'])
+        test_labels.tolist(), columns=['target']
     )
     df['predicted'] = predictions.tolist()
 

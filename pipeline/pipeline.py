@@ -52,9 +52,11 @@ def train_and_eval_op(image: str, pvolume: PipelineVolume, data_dir: str, epochs
         image=image,
         command=[CONDA_PYTHON_CMD, f"{PROJECT_ROOT}/src/train.py"],
         arguments=["--data_dir", data_dir, "--epochs", epochs],
-        file_outputs={'output': f'{PROJECT_ROOT}/output.txt',
-        'pipeline-metrics':'/mlpipeline-metrics.json',
-        'mlpipeline-ui-metadata': '/mlpipeline-ui-metadata.json'},
+        file_outputs={
+            'output': f'{PROJECT_ROOT}/output.txt',
+            'pipeline-metrics':'/mlpipeline-metrics.json',
+            'mlpipeline-ui-metadata': '/mlpipeline-ui-metadata.json'
+        },
         container_kwargs={'image_pull_policy': 'IfNotPresent'},
         pvolumes={"/workspace": pvolume}
     )
