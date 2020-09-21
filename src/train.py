@@ -63,11 +63,6 @@ def train(data_dir: str, epochs: str):
             'name': 'accuracy',
             'numberValue':  float(test_acc),
             'format': "PERCENTAGE",
-        },
-        {
-            'name': 'loss',
-            'numberValue':  float(test_loss),
-            'format': "PERCENTAGE",
         }]
     }
     with file_io.FileIO('/mlpipeline-metrics.json', 'w') as f:
@@ -95,17 +90,22 @@ def train(data_dir: str, epochs: str):
     cm_file = '/confusion_matrix.csv'
     with file_io.FileIO(cm_file, 'w') as f:
         df_cm.to_csv(f, columns=['target', 'predicted', 'count'], header=False, index=False)
+    
+    buf = ''
+    for line in open(cm_file):
+        buf = buf + line
 
     metadata = {
         'outputs' : [{
         'type': 'confusion_matrix',
         'format': 'csv',
+        'storage': 'inline'
         'schema': [
             {'name': 'target', 'type': 'CATEGORY'},
             {'name': 'predicted', 'type': 'CATEGORY'},
             {'name': 'count', 'type': 'NUMBER'},
         ],
-        'source': cm_file,
+        'source': buf,
         # Convert vocab to string because for bealean values we want "True|False" to match csv data.
         'labels': list(map(str, vocab)),
         }]

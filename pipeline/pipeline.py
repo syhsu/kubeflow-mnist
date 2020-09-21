@@ -57,7 +57,7 @@ def train_and_eval_op(image: str, pvolume: PipelineVolume, data_dir: str, epochs
             'cm':'/confusion_matrix.csv',
         },
         output_artifact_paths={
-            'pipeline-metrics':'/mlpipeline-metrics.json',
+            'mlpipeline-metrics':'/mlpipeline-metrics.json',
             'mlpipeline-ui-metadata': '/mlpipeline-ui-metadata.json'
         },
         container_kwargs={'image_pull_policy': 'IfNotPresent'},
@@ -85,5 +85,5 @@ def training_pipeline(image: str = 'shyhs/kubeflow-mnist',
 
 if __name__ == '__main__':
     import kfp.compiler as compiler
-    version = '2.3'
+    version = '2.4'
     compiler.Compiler().compile(training_pipeline, 'Gitpipeline_v' + version + '.tar.gz')
