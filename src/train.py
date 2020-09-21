@@ -9,6 +9,8 @@ import argparse
 
 from constants import PROJECT_ROOT
 
+from tensorflow.python.lib.io import file_io
+
 
 def train(data_dir: str, epochs: str):
     # Training
@@ -49,6 +51,23 @@ def train(data_dir: str, epochs: str):
     with open(os.path.join(PROJECT_ROOT, 'output.txt'), 'w') as f:
         f.write(model_path)
         print(f'Model written to: {model_path}')
+
+
+    # Add pipeline metrics
+    metrics = {
+    'metrics': [{
+      'name': 'accuracy',
+      'numberValue':  float(test_acc),
+      'format': "PERCENTAGE",
+    },
+    {
+      'name': 'loss',
+      'numberValue':  float(test_loss),
+      'format': "PERCENTAGE",
+    }]
+  }
+  with file_io.FileIO('/mlpipeline-metrics.json', 'w') as f:
+    json.dump(metrics, f)
 
 
 if __name__ == '__main__':
