@@ -55,19 +55,19 @@ def train(data_dir: str, epochs: str):
 
     # Add pipeline metrics
     metrics = {
-    'metrics': [{
-      'name': 'accuracy',
-      'numberValue':  float(test_acc),
-      'format': "PERCENTAGE",
-    },
-    {
-      'name': 'loss',
-      'numberValue':  float(test_loss),
-      'format': "PERCENTAGE",
-    }]
-  }
-  with file_io.FileIO('/mlpipeline-metrics.json', 'w') as f:
-    json.dump(metrics, f)
+        'metrics': [{
+            'name': 'accuracy',
+            'numberValue':  float(test_acc),
+            'format': "PERCENTAGE",
+        },
+        {
+            'name': 'loss',
+            'numberValue':  float(test_loss),
+            'format': "PERCENTAGE",
+        }]
+    }
+    with file_io.FileIO('/mlpipeline-metrics.json', 'w') as f:
+        json.dump(metrics, f)
 
 
 if __name__ == '__main__':
