@@ -11,6 +11,7 @@ import argparse
 from constants import PROJECT_ROOT
 
 from tensorflow.python.lib.io import file_io
+from sklearn.metrics import confusion_matrix, accuracy_score
 
 
 def train(data_dir: str, epochs: str):
