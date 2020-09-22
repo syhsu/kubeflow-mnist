@@ -29,6 +29,7 @@ def topk_accuracy(y_true, y_prob, n=5, normalize=True):
     else:
         return counter
 
+
 def train(data_dir: str, epochs: str):
     # Training
     model = keras.Sequential([
@@ -56,8 +57,6 @@ def train(data_dir: str, epochs: str):
 
     # Evaluation
     test_loss, test_acc = model.evaluate(test_images, test_labels, verbose=2)
-
-    
 
     print(f'Test Loss: {test_loss}')
     print(f'Test Acc: {test_acc}')
@@ -89,11 +88,12 @@ def train(data_dir: str, epochs: str):
             'numberValue':  float(test_loss),
             'format': "RAW",
         },
-        {
-            'name': 'top5',
-            'numberValue':  float(topkAccuracy),
-            'format': "PERCENTAGE",
-        }]
+        #{
+        #    'name': 'top5',
+        #    'numberValue':  float(topkAccuracy),
+        #    'format': "PERCENTAGE",
+        #}
+        ]
     }
     with file_io.FileIO('/mlpipeline-metrics.json', 'w') as f:
         json.dump(metrics, f)
